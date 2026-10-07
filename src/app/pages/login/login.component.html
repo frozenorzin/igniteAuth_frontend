@@ -1,0 +1,61 @@
+<div class="login-page">
+
+  <div class="login-card">
+
+    <div class="system-header">
+      <h1>Reference System</h1>
+
+      <p>
+        Protected Computing Environment
+      </p>
+    </div>
+
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="login()"
+    >
+
+      <div class="field">
+        <label for="username">User ID</label>
+
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Enter user ID"
+        />
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Enter password"
+        />
+      </div>
+
+      @if (errorMessage) {
+        <p class="error">
+          {{ errorMessage }}
+        </p>
+      }
+
+      <button
+        type="submit"
+        [disabled]="loading"
+      >
+        {{ loading ? 'Authenticating...' : 'Login' }}
+      </button>
+
+    </form>
+
+    <div class="security-info">
+      <span>Protected by IgniteAuth</span>
+    </div>
+
+  </div>
+
+</div>
