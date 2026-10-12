@@ -52,7 +52,7 @@ export class LoginComponent {
     this.authService.login(credentials).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/system']);
+        this.router.navigate(['/']);
       },
 
       error: () => {

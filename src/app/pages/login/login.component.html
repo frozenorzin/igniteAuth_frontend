@@ -23,6 +23,7 @@
           type="text"
           formControlName="username"
           placeholder="Enter user ID"
+          autocomplete="username"
         />
       </div>
 
@@ -34,6 +35,7 @@
           type="password"
           formControlName="password"
           placeholder="Enter password"
+          autocomplete="current-password"
         />
       </div>
 
@@ -45,7 +47,7 @@
 
       <button
         type="submit"
-        [disabled]="loading"
+        [disabled]="loading || loginForm.invalid"
       >
         {{ loading ? 'Authenticating...' : 'Login' }}
       </button>

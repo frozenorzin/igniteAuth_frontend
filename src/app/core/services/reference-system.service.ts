@@ -10,7 +10,7 @@ import { ReferenceSystem } from '../models/reference-system.model';
 export class ReferenceSystemService {
 
   private readonly apiUrl =
-    'https://localhost:YOUR_PORT/api/referencesystem';
+    '/api/referencesystem';
 
   constructor(private http: HttpClient) {}
 

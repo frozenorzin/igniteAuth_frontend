@@ -85,15 +85,14 @@
   background: #299764;
 }
 
-.user {
-  margin-left: 16px;
-
-  padding: 8px 14px;
-
-  border: 1px solid #d7dce1;
-  border-radius: 5px;
-
-  background: #fafafa;
+.logout-button,
+.action-button {
+  padding: 9px 14px;
+  border: 1px solid #cfd5db;
+  border-radius: 4px;
+  background: #fff;
+  color: #18202a;
+  cursor: pointer;
 }
 
 
@@ -282,18 +281,6 @@
   font-size: 21px;
 }
 
-.secondary-button {
-  padding: 8px 14px;
-
-  background: white;
-
-  border: 1px solid #cfd5db;
-  border-radius: 4px;
-
-  cursor: pointer;
-}
-
-
 /* SUBSYSTEM CARDS */
 
 .subsystem-grid {
@@ -352,77 +339,40 @@
   line-height: 1.5;
 }
 
-.available,
-.protected {
+.subsystem-status {
   display: block;
-
   margin-top: 18px;
-
+  color: #29845b;
   font-size: 12px;
 }
 
-.available {
-  color: #29845b;
+.state-panel,
+.empty-message {
+  padding: 28px;
+  border: 1px solid #dfe3e8;
+  border-radius: 6px;
+  background: #fff;
 }
 
-.protected {
-  color: #9a6826;
-}
-
-
-/* CONTROL PLANE */
-
-.security-panel {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 26px;
-
-  background: #18222c;
-  color: white;
-
-  border-radius: 7px;
-}
-
-.security-panel h2 {
+.state-panel h1 {
   margin: 0 0 8px;
 }
 
-.security-panel p:not(.eyebrow) {
-  max-width: 650px;
-
-  margin: 0;
-
-  color: #b8c1c9;
-
+.state-panel p {
+  color: #626d76;
   line-height: 1.6;
 }
 
-.security-panel .eyebrow {
-  color: #8e9ba6;
+.state-panel .action-button {
+  margin-top: 12px;
 }
 
-.security-status {
-  min-width: 140px;
-
-  padding: 14px 18px;
-
-  border: 1px solid #42505d;
-  border-radius: 5px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+.error-panel {
+  border-left: 3px solid #bd4b42;
 }
 
-.security-status span {
-  color: #95a2ad;
-  font-size: 10px;
-}
-
-.security-status strong {
-  font-size: 14px;
+.empty-message {
+  color: #626d76;
 }
 
 
@@ -441,12 +391,6 @@
 
   .system-info {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .security-panel {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 20px;
   }
 
 }
