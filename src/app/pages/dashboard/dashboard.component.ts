@@ -38,6 +38,18 @@ export class DashboardComponent implements OnInit {
     this.loadReferenceSystem();
   }
 
+  getSubsystemMatrix(referenceSystem: ReferenceSystem) {
+    return (referenceSystem.registeredSubsystems ?? []).map((subsystem) => ({
+      ...subsystem,
+      intents: (referenceSystem.validIntents ?? [])
+        .filter((entry) => entry.subsystemId === subsystem.subsystemId)
+        .map((entry) => entry.intent),
+      commands: (referenceSystem.validCommands ?? [])
+        .filter((entry) => entry.subsystemId === subsystem.subsystemId)
+        .map((entry) => entry.command)
+    }));
+  }
+
   loadReferenceSystem(): void {
     this.loading.set(true);
     this.errorMessage.set('');

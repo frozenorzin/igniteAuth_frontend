@@ -1,7 +1,9 @@
 <div class="system-shell">
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark">IA</div>
+      <div class="brand-mark">
+        <img src="/Logo.png" alt="IgniteAuth logo" />
+      </div>
       <div>
         <h2>IgniteAuth</h2>
         <span>Reference System</span>
@@ -26,7 +28,7 @@
     </nav>
     <div class="sidebar-footer">
       <span>Protected by</span>
-      <strong>IgniteAuth</strong>
+      <strong>{{ system()?.authenticatedUser?.authId ?? 'IgniteAuth' }}</strong>
     </div>
   </aside>
 
@@ -82,23 +84,63 @@
               <p class="eyebrow">REGISTERED RESOURCES</p>
               <h2>Subsystems</h2>
             </div>
-            <span class="count">{{ referenceSystem.subsystems.length }}</span>
+            <span class="count">{{ (referenceSystem.registeredSubsystems ?? []).length }}</span>
           </div>
 
-          @if (referenceSystem.subsystems.length > 0) {
+          @if ((referenceSystem.registeredSubsystems ?? []).length > 0) {
             <div class="subsystem-grid">
-              @for (subsystem of referenceSystem.subsystems; track subsystem.subSystemId) {
+              @for (subsystem of getSubsystemMatrix(referenceSystem); track subsystem.subsystemId) {
                 <article class="subsystem-card">
-                  <span class="card-type">{{ subsystem.domain }}</span>
+                  <span class="card-type">reference</span>
                   <h3>{{ subsystem.name }}</h3>
-                  <p>{{ subsystem.description }}</p>
-                  <span class="subsystem-status">{{ subsystem.status }}</span>
+                  <p>{{ subsystem.intents.length }} valid intent(s) and {{ subsystem.commands.length }} command(s) registered.</p>
+                  <span class="subsystem-status">{{ subsystem.subsystemId }}</span>
                 </article>
               }
             </div>
           } @else {
             <p class="empty-message">No subsystems are registered.</p>
           }
+        </section>
+
+        <section class="section access-grid">
+          <div class="access-panel">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">ACCESS CONTROL</p>
+                <h2>Valid Intents</h2>
+              </div>
+            </div>
+            <div class="pill-list">
+              @for (group of getSubsystemMatrix(referenceSystem); track group.subsystemId) {
+                <div class="group-box">
+                  <h3>{{ group.name }}</h3>
+                  @for (intent of group.intents; track intent) {
+                    <span class="pill pill-intent">{{ intent }}</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="access-panel">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">COMMAND MATRIX</p>
+                <h2>Valid Commands</h2>
+              </div>
+            </div>
+            <div class="pill-list">
+              @for (group of getSubsystemMatrix(referenceSystem); track group.subsystemId) {
+                <div class="group-box">
+                  <h3>{{ group.name }}</h3>
+                  @for (command of group.commands; track command) {
+                    <span class="pill pill-command">{{ command }}</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
         </section>
       } @else {
         <section class="state-panel">

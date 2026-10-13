@@ -14,20 +14,24 @@ describe('DashboardComponent', () => {
   const system: ReferenceSystem = {
     referenceSystemId: 1,
     systemName: 'IgniteAuth Reference System',
-    systemType: 'Control Plane Security Framework',
+    systemType: ' Simple Service Framework',
     systemVersion: 'v0.9',
-    description: 'Protected API data',
+    description: 'Reference system containing subsystems, policies, intents, commands, and targets.',
     status: 'Active',
-    createdAt: '2026-10-12T00:00:00Z',
-    subsystems: [{
-      subSystemId: 1,
-      referenceSystemId: 1,
-      name: 'Embedded-X',
-      domain: 'Defense Airborne',
-      description: 'Registered subsystem',
-      status: 'Active'
-    }],
-    policies: []
+    createdAt: '2026-10-13T18:00:38.0043917Z',
+    authenticatedUser: { authId: 'admin' },
+    registeredSubsystems: [
+      { subsystemId: 'ModelService', name: 'ModelService' },
+      { subsystemId: 'UserService', name: 'UserService' }
+    ],
+    validIntents: [
+      { subsystemId: 'ModelService', intent: 'IntentHash1' },
+      { subsystemId: 'UserService', intent: 'IntentHash5' }
+    ],
+    validCommands: [
+      { subsystemId: 'ModelService', command: 'CreateModel' },
+      { subsystemId: 'UserService', command: 'CreateUser' }
+    ]
   };
 
   beforeEach(async () => {
@@ -59,6 +63,7 @@ describe('DashboardComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(fixture.nativeElement.textContent).toContain('IgniteAuth Reference System');
-    expect(fixture.nativeElement.textContent).toContain('Embedded-X');
+    expect(fixture.nativeElement.textContent).toContain('ModelService');
+    expect(fixture.nativeElement.textContent).toContain('IntentHash1');
   });
 });

@@ -1,3 +1,22 @@
+export interface AuthenticatedUser {
+  authId: string;
+}
+
+export interface RegisteredSubsystem {
+  subsystemId: string;
+  name: string;
+}
+
+export interface ValidIntent {
+  subsystemId: string;
+  intent: string;
+}
+
+export interface ValidCommand {
+  subsystemId: string;
+  command: string;
+}
+
 export interface ReferenceSystem {
   referenceSystemId: number;
   systemName: string;
@@ -6,8 +25,12 @@ export interface ReferenceSystem {
   description: string;
   status: string;
   createdAt: string;
-  subsystems: Subsystem[];
-  policies: ReferencePolicy[];
+  authenticatedUser?: AuthenticatedUser;
+  registeredSubsystems?: RegisteredSubsystem[];
+  validIntents?: ValidIntent[];
+  validCommands?: ValidCommand[];
+  subsystems?: Subsystem[];
+  policies?: ReferencePolicy[];
 }
 
 export interface Subsystem {
