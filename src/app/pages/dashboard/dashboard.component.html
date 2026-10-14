@@ -51,30 +51,50 @@
     } @else {
       @if (system(); as referenceSystem) {
         <section class="welcome">
-          <div>
-            <p class="eyebrow">REFERENCE SYSTEM</p>
+          <div class="welcome-copy">
+            <p class="eyebrow">STM32 REFERENCE PLATFORM</p>
             <h1>{{ referenceSystem.systemName }}</h1>
             <p class="description">{{ referenceSystem.description }}</p>
+            <div class="welcome-footer">
+              <span class="system-badge">{{ referenceSystem.status }}</span>
+              <span class="platform-label">STM32 · ARM Cortex-M</span>
+            </div>
           </div>
-          <span class="system-badge">{{ referenceSystem.status }}</span>
+          <div class="hardware-showcase" aria-label="STM32 hardware">
+            <img
+              class="board-image"
+              src="/STM32_main.webp"
+              alt="STM32 development board on a circuit board"
+            />
+            <div class="board-caption">
+              <span>DEVELOPMENT PLATFORM</span>
+              <strong>STM32 Nucleo</strong>
+            </div>
+          </div>
         </section>
 
-        <section class="system-info" aria-label="Reference System details">
-          <div class="info-item">
-            <span>System ID</span>
-            <strong>{{ referenceSystem.referenceSystemId }}</strong>
+        <section class="details-row" aria-label="Reference System details">
+          <div class="system-info">
+            <div class="info-item">
+              <span>System ID</span>
+              <strong>{{ referenceSystem.referenceSystemId }}</strong>
+            </div>
+            <div class="info-item">
+              <span>System Type</span>
+              <strong>{{ referenceSystem.systemType }}</strong>
+            </div>
+            <div class="info-item">
+              <span>Version</span>
+              <strong>{{ referenceSystem.systemVersion }}</strong>
+            </div>
+            <div class="info-item">
+              <span>Created</span>
+              <strong>{{ referenceSystem.createdAt | date: 'medium' }}</strong>
+            </div>
           </div>
-          <div class="info-item">
-            <span>System Type</span>
-            <strong>{{ referenceSystem.systemType }}</strong>
-          </div>
-          <div class="info-item">
-            <span>Version</span>
-            <strong>{{ referenceSystem.systemVersion }}</strong>
-          </div>
-          <div class="info-item">
-            <span>Created</span>
-            <strong>{{ referenceSystem.createdAt | date: 'medium' }}</strong>
+          <div class="chip-card">
+            <img src="/STM.png" alt="STM32 microcontroller chip" />
+            <span>STM32 MCU</span>
           </div>
         </section>
 
