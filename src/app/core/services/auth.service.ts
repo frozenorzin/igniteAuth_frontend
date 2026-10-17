@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map, tap, switchMap, catchError, throwError } from 'rxjs';
 
 export interface LoginRequest {
   username: string;
@@ -12,6 +12,13 @@ export interface LoginResponse {
   accessToken: string;
   tokenType: 'Bearer';
   expiresAt: string;
+  role: 'Admin' | 'User';
+}
+
+export interface AuthSession {
+  authenticated: true;
+  username: string;
+  role: 'Admin' | 'User';
 }
 
 const TOKEN_STORAGE_KEY = 'access_token';
@@ -22,6 +29,8 @@ const TOKEN_STORAGE_KEY = 'access_token';
 export class AuthService {
 
   readonly authenticated = signal(false);
+  readonly session = signal<AuthSession | null>(null);
+  readonly sessionError = signal('');
   private expirationTimer?: ReturnType<typeof setTimeout>;
 
   constructor(
@@ -45,8 +54,31 @@ export class AuthService {
 
           return response;
         }),
-        tap(response => this.startSession(response.accessToken))
+        tap(response => this.startSession(response.accessToken)),
+        switchMap(response => this.refreshSession().pipe(map(() => response))),
+        catchError(error => {
+          this.clearSession(false);
+          return throwError(() => error);
+        })
       );
+  }
+
+  refreshSession(): Observable<AuthSession> {
+    this.sessionError.set('');
+    return this.http.get<AuthSession>('/api/auth/session').pipe(
+      map(session => {
+        if (!session?.authenticated || !session.username || !['Admin', 'User'].includes(session.role)) {
+          throw new Error('Invalid session response.');
+        }
+        return session;
+      }),
+      tap(session => this.session.set(session)),
+      catchError(error => {
+        this.session.set(null);
+        this.sessionError.set('Unable to verify your session. Retry or sign in again.');
+        return throwError(() => error);
+      })
+    );
   }
 
   isAuthenticated(): boolean {
@@ -90,6 +122,10 @@ export class AuthService {
     if (token && expiresAt && expiresAt > Date.now()) {
       this.authenticated.set(true);
       this.scheduleExpiration(expiresAt);
+      // Let dependency injection finish before the interceptor resolves this service.
+      queueMicrotask(() => {
+        if (this.isAuthenticated()) this.refreshSession().subscribe({ error: () => {} });
+      });
       return;
     }
 
@@ -109,7 +145,8 @@ export class AuthService {
       ? Date.parse(result.expiresAt)
       : NaN;
 
-    return result.tokenType === 'Bearer'
+    return (result.role === 'Admin' || result.role === 'User')
+      && result.tokenType === 'Bearer'
       && typeof result.expiresAt === 'string'
       && Number.isFinite(responseExpiry)
       && responseExpiry > Date.now()
@@ -167,6 +204,8 @@ export class AuthService {
 
     this.storage?.removeItem(TOKEN_STORAGE_KEY);
     this.authenticated.set(false);
+    this.session.set(null);
+    this.sessionError.set('');
 
     if (redirectToLogin) {
       void this.router.navigateByUrl('/login');

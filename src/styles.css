@@ -1,1 +1,49 @@
 /* You can add global styles to this file, and also import other style files */
+
+.system-shell .sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.system-shell .sidebar-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  fill: currentColor;
+}
+
+.system-shell .sidebar-toggle .sidebar-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.system-shell .sidebar-toggle {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(71, 85, 105, 0.85);
+  background: rgba(15, 23, 42, 0.7);
+  color: #bfd0e1;
+}
+
+.system-shell.sidebar-collapsed .sidebar {
+  width: 76px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.system-shell.sidebar-collapsed .sidebar a {
+  justify-content: center;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.system-shell.sidebar-collapsed .content {
+  margin-left: 76px;
+}
+
+@media (max-width: 850px) {
+  .system-shell.sidebar-collapsed .content {
+    margin-left: 0;
+  }
+}

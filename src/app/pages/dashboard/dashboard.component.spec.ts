@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
@@ -7,6 +8,7 @@ import { DashboardComponent } from './dashboard.component';
 import { AuthService } from '../../core/services/auth.service';
 import { ReferenceSystemService } from '../../core/services/reference-system.service';
 import { ReferenceSystem } from '../../core/models/reference-system.model';
+import { DecisionAnalyticsService } from '../../core/services/decision-analytics.service';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -42,6 +44,7 @@ describe('DashboardComponent', () => {
           provide: AuthService,
           useValue: {
             authenticated: signal(true),
+            session: signal({ authenticated: true, username: 'admin', role: 'Admin' }),
             isAuthenticated: () => true,
             logout: jasmine.createSpy('logout')
           }
@@ -50,7 +53,19 @@ describe('DashboardComponent', () => {
           provide: ReferenceSystemService,
           useValue: { getReferenceSystem: () => of(system) }
         },
-        provideRouter([])
+        {
+          provide: DecisionAnalyticsService,
+          useValue: {
+            observations: signal([]),
+            totalStored: signal(0),
+            loading: signal(false),
+            error: signal(''),
+            refresh: () => of(void 0),
+            clearLocal: jasmine.createSpy('clearLocal')
+          }
+        },
+        provideRouter([]),
+        provideHttpClient()
       ]
     })
     .compileComponents();
@@ -65,5 +80,27 @@ describe('DashboardComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('IgniteAuth Reference System');
     expect(fixture.nativeElement.textContent).toContain('ModelService');
     expect(fixture.nativeElement.textContent).toContain('IntentHash1');
+  });
+
+  it('should hide and reveal the side panel', () => {
+    const shell = fixture.nativeElement.querySelector('.system-shell');
+    const toggle = fixture.nativeElement.querySelector('.sidebar-toggle') as HTMLButtonElement;
+
+    expect(toggle.getAttribute('aria-label')).toBe('Hide side panel');
+    expect(shell.classList.contains('sidebar-collapsed')).toBe(false);
+
+    toggle.click();
+    fixture.detectChanges();
+
+    expect(toggle.getAttribute('aria-label')).toBe('Reveal side panel');
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(shell.classList.contains('sidebar-collapsed')).toBe(true);
+
+    toggle.click();
+    fixture.detectChanges();
+
+    expect(toggle.getAttribute('aria-label')).toBe('Hide side panel');
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(shell.classList.contains('sidebar-collapsed')).toBe(false);
   });
 });

@@ -17,7 +17,8 @@ function createLoginResponse(expiresAt: number): LoginResponse {
   return {
     accessToken: createToken(expiresAt),
     tokenType: 'Bearer',
-    expiresAt: new Date(expiresAt).toISOString()
+    expiresAt: new Date(expiresAt).toISOString(),
+    role: 'User'
   };
 }
 
@@ -55,7 +56,10 @@ describe('AuthService', () => {
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(credentials);
     request.flush(createLoginResponse(expiresAt));
+    const sessionRequest = httpTestingController.expectOne('/api/auth/session');
+    sessionRequest.flush({ authenticated: true, username: 'operator', role: 'User' });
 
+    expect(service.session()?.role).toBe('User');
     expect(receivedResponse).toBeTrue();
     expect(sessionStorage.getItem('access_token')).toBe(createToken(expiresAt));
     expect(service.authenticated()).toBeTrue();

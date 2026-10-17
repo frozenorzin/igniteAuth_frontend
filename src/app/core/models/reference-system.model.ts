@@ -17,6 +17,12 @@ export interface ValidCommand {
   command: string;
 }
 
+export interface IntentCommandMapping {
+  subsystemId: string;
+  intent: string;
+  commands: string[];
+}
+
 export interface ReferenceSystem {
   referenceSystemId: number;
   systemName: string;
@@ -29,6 +35,7 @@ export interface ReferenceSystem {
   registeredSubsystems?: RegisteredSubsystem[];
   validIntents?: ValidIntent[];
   validCommands?: ValidCommand[];
+  intentCommandMappings?: IntentCommandMapping[];
   subsystems?: Subsystem[];
   policies?: ReferencePolicy[];
 }

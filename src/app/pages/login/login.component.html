@@ -1,63 +1,78 @@
-<div class="login-page">
-
-  <div class="login-card">
-
-    <div class="system-header">
-      <h1>Reference System</h1>
-
-      <p>
-        Protected Computing Environment
-      </p>
+<main class="login-page">
+  <section class="identity-panel" aria-label="IgniteAuth STM32 reference platform">
+    <div class="brand-lockup">
+      <span class="logo-frame"><img src="/Logo.png" alt="" /></span>
+      <div><strong>IgniteAuth</strong><span>CONTROL PLANE SECURITY</span></div>
     </div>
 
-    <form
-      [formGroup]="loginForm"
-      (ngSubmit)="login()"
-    >
+    <div class="identity-copy">
+      <p class="eyebrow">STM32 REFERENCE PLATFORM · v0.9</p>
+      <h2>Intent-aware authorization at the execution boundary.</h2>
+      <p>Authenticate to inspect registered subsystems, evaluate policy decisions, and observe protected command flows.</p>
 
-      <div class="field">
-        <label for="username">User ID</label>
-
-        <input
-          id="username"
-          type="text"
-          formControlName="username"
-          placeholder="Enter user ID"
-          autocomplete="username"
-        />
+      <div class="trust-path" aria-label="Security validation stages">
+        <div><span>01</span><strong>Identity</strong><small>JWT-authenticated principal</small></div>
+        <i aria-hidden="true"></i>
+        <div><span>02</span><strong>Intent</strong><small>HMAC policy validation</small></div>
+        <i aria-hidden="true"></i>
+        <div><span>03</span><strong>Decision</strong><small>Explicit allow or deny</small></div>
       </div>
-
-      <div class="field">
-        <label for="password">Password</label>
-
-        <input
-          id="password"
-          type="password"
-          formControlName="password"
-          placeholder="Enter password"
-          autocomplete="current-password"
-        />
-      </div>
-
-      @if (errorMessage) {
-        <p class="error">
-          {{ errorMessage }}
-        </p>
-      }
-
-      <button
-        type="submit"
-        [disabled]="loading || loginForm.invalid"
-      >
-        {{ loading ? 'Authenticating...' : 'Login' }}
-      </button>
-
-    </form>
-
-    <div class="security-info">
-      <span>Protected by IgniteAuth</span>
     </div>
 
-  </div>
+    <div class="platform-status">
+      <span class="status-dot" aria-hidden="true"></span>
+      Protected environment
+      <strong>STM32 · ARM Cortex-M</strong>
+    </div>
+  </section>
 
-</div>
+  <section class="form-panel">
+    <div class="login-card">
+      <div class="card-header">
+        <span class="secure-badge"><i aria-hidden="true"></i> SECURE ACCESS</span>
+        <h1>Login to STM32<br />Reference System</h1>
+        <p>Use your authorized IgniteAuth identity to continue.</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+        <div class="field">
+          <label for="username">User ID</label>
+          <div class="input-shell">
+            <span aria-hidden="true">ID</span>
+            <input id="username" type="text" formControlName="username"
+              placeholder="Enter user ID" autocomplete="username" />
+          </div>
+          @if (loginForm.controls.username.touched && loginForm.controls.username.invalid) {
+            <small class="field-error">User ID is required.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="input-shell">
+            <span aria-hidden="true">••</span>
+            <input id="password" type="password" formControlName="password"
+              placeholder="Enter password" autocomplete="current-password" />
+          </div>
+          @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) {
+            <small class="field-error">Password is required.</small>
+          }
+        </div>
+
+        @if (errorMessage) {
+          <p class="error" role="alert">{{ errorMessage }}</p>
+        }
+
+        <button type="submit" [disabled]="loading || loginForm.invalid">
+          <span>{{ loading ? 'Authenticating…' : 'Authenticate' }}</span>
+          @if (!loading) { <span aria-hidden="true">→</span> }
+        </button>
+      </form>
+
+      <footer>
+        <span class="shield" aria-hidden="true">✓</span>
+        <span><strong>Protected by IgniteAuth</strong><small>TLS-ready · policy-enforced session</small></span>
+      </footer>
+    </div>
+  </section>
+</main>

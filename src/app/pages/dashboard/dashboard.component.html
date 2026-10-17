@@ -1,4 +1,4 @@
-<div class="system-shell">
+<div class="system-shell" [class.sidebar-collapsed]="sidebarCollapsed()">
   <header class="topbar">
     <div class="brand">
       <div class="brand-mark">
@@ -20,15 +20,62 @@
   </header>
 
   <aside class="sidebar">
-    <nav aria-label="Application navigation">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">System Overview</a>
-      <a routerLink="/subsystems" routerLinkActive="active">Subsystems</a>
-      <a routerLink="/control-plane" routerLinkActive="active">Control Plane</a>
-      <a routerLink="/about" routerLinkActive="active">About System</a>
+    <div class="d-flex justify-content-end mb-2" [class.justify-content-center]="sidebarCollapsed()">
+      <button
+        type="button"
+        class="sidebar-toggle btn btn-sm p-0 d-inline-flex align-items-center justify-content-center"
+        [attr.aria-label]="sidebarCollapsed() ? 'Reveal side panel' : 'Hide side panel'"
+        [attr.title]="sidebarCollapsed() ? 'Reveal side panel' : 'Hide side panel'"
+        [attr.aria-expanded]="!sidebarCollapsed()"
+        aria-controls="application-navigation"
+        (click)="toggleSidebar()"
+      >
+        @if (sidebarCollapsed()) {
+          <svg class="sidebar-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path fill-rule="evenodd" d="M4.146 3.646a.5.5 0 0 0 0 .708L7.793 8l-3.647 3.646a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708 0M11.5 1a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-1 0v-13a.5.5 0 0 1 .5-.5" />
+          </svg>
+        } @else {
+          <svg class="sidebar-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path fill-rule="evenodd" d="M11.854 3.646a.5.5 0 0 1 0 .708L8.207 8l3.647 3.646a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 0 1 .708 0M4.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 1 0v-13a.5.5 0 0 0-.5-.5" />
+          </svg>
+        }
+      </button>
+    </div>
+    <nav id="application-navigation" aria-label="Application navigation">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" [attr.title]="sidebarCollapsed() ? 'System Overview' : null">
+        <svg class="sidebar-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
+        </svg>
+        <span [class.visually-hidden]="sidebarCollapsed()">System Overview</span>
+      </a>
+      <a href="#analytics" [attr.title]="sidebarCollapsed() ? 'Research Analytics' : null">
+        <svg class="sidebar-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07" />
+        </svg>
+        <span [class.visually-hidden]="sidebarCollapsed()">Research Analytics</span>
+      </a>
+      <a routerLink="/subsystems" routerLinkActive="active" [attr.title]="sidebarCollapsed() ? 'Subsystems' : null">
+        <svg class="sidebar-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zM1 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zM1 12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z" />
+        </svg>
+        <span [class.visually-hidden]="sidebarCollapsed()">Subsystems</span>
+      </a>
+      <a routerLink="/control-plane" routerLinkActive="active" [attr.title]="sidebarCollapsed() ? 'Control Plane' : null">
+        <svg class="sidebar-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z" />
+        </svg>
+        <span [class.visually-hidden]="sidebarCollapsed()">Control Plane</span>
+      </a>
+      <a routerLink="/about" routerLinkActive="active" [attr.title]="sidebarCollapsed() ? 'About System' : null">
+        <svg class="sidebar-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2" />
+        </svg>
+        <span [class.visually-hidden]="sidebarCollapsed()">About System</span>
+      </a>
     </nav>
-    <div class="sidebar-footer">
+    <div class="sidebar-footer" [class.d-none]="sidebarCollapsed()">
       <span>Protected by</span>
-      <strong>{{ system()?.authenticatedUser?.authId ?? 'IgniteAuth' }}</strong>
+      <strong>{{ authService.session()?.username ?? 'Verifying session' }}<br />{{ authService.session()?.role ?? 'Unknown role' }} · isAdmin: {{ authService.session()?.role === 'Admin' }}</strong>
     </div>
   </aside>
 
@@ -73,6 +120,8 @@
           </div>
         </section>
 
+        <app-operation-workbench [system]="referenceSystem" />
+
         <section class="details-row" aria-label="Reference System details">
           <div class="system-info">
             <div class="info-item">
@@ -97,6 +146,8 @@
             <span>STM32 MCU</span>
           </div>
         </section>
+
+        <app-research-analytics />
 
         <section class="section">
           <div class="section-heading">

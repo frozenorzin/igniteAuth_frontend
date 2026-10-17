@@ -5,6 +5,9 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ReferenceSystemService }
   from '../../core/services/reference-system.service';
 import { AuthService } from '../../core/services/auth.service';
+import { OperationWorkbenchComponent } from '../../components/operation-workbench/operation-workbench.component';
+import { ResearchAnalyticsComponent } from '../../components/research-analytics/research-analytics.component';
+import { DecisionAnalyticsService } from '../../core/services/decision-analytics.service';
 
 import { ReferenceSystem }
   from '../../core/models/reference-system.model';
@@ -12,7 +15,7 @@ import { ReferenceSystem }
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, OperationWorkbenchComponent, ResearchAnalyticsComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -21,21 +24,29 @@ export class DashboardComponent implements OnInit {
   readonly system = signal<ReferenceSystem | null>(null);
   readonly loading = signal(true);
   readonly errorMessage = signal('');
+  readonly sidebarCollapsed = signal(false);
 
   constructor(
     private referenceSystemService: ReferenceSystemService,
-    private authService: AuthService,
+    public authService: AuthService,
+    private analytics: DecisionAnalyticsService,
     private router: Router
   ) {
     effect(() => {
       if (!this.authService.authenticated()) {
         this.system.set(null);
+        this.analytics.clearLocal();
       }
     });
   }
 
   ngOnInit(): void {
     this.loadReferenceSystem();
+    this.analytics.refresh().subscribe({ error: () => {} });
+  }
+
+  toggleSidebar(): void {
+    this.sidebarCollapsed.update((collapsed) => !collapsed);
   }
 
   getSubsystemMatrix(referenceSystem: ReferenceSystem) {

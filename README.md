@@ -57,3 +57,16 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+## STM32 Control Plane integration
+
+Start IgAPI on `http://localhost:5249`, then run `npm install` and `npm start` from this directory. Angular's development proxy forwards `/api` to IgAPI. Sign in through the form; credentials are never stored by the frontend. The access token stays in session storage and is sent only to same-origin `/api` requests. Roles are taken from the backend session response.
+
+The operation console loads subsystems and intent-command mappings from the reference-system endpoint, labels read-only and Admin operations, and displays a simulation-only console and recent session decisions. It executes a deterministic fixture only after an explicit matching `Allow` response. It does not operate actual hardware.
+
+IgAPI issues a fresh CPC ID when the user requests authorization for a subsystem.
+The frontend sends the operation without an ID, validates the positive ID returned
+by the backend, and displays the most recently issued ID in the operation console.
+
+Run `npm run build` and `npm test -- --watch=false --browsers=ChromeHeadless` to verify the frontend. Bootstrap 5 is installed as a project dependency.

@@ -6,6 +6,7 @@ import {
   Validators
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../../core/services/auth.service';
 
@@ -39,6 +40,7 @@ export class LoginComponent {
 
   login(): void {
 
+    if (this.loading) return;
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -49,15 +51,19 @@ export class LoginComponent {
 
     const credentials = this.loginForm.getRawValue();
 
+
     this.authService.login(credentials).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/']);
+        this.loginForm.controls.password.reset();
+        void this.router.navigate(['/']);
       },
 
-      error: () => {
+      error: (error: unknown) => {
         this.loading = false;
-        this.errorMessage = 'Authentication failed.';
+        this.loginForm.controls.password.reset();
+        this.errorMessage = error instanceof HttpErrorResponse && error.status === 401
+          ? 'Invalid username or password.' : 'Unable to sign in. Check the API connection and try again.';
       }
     });
   }

@@ -1,0 +1,61 @@
+<section class="workbench" aria-labelledby="workbench-title">
+  <div class="workbench-heading d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div><p class="eyebrow">INTERACTIVE CONTROL PLANE</p><h2 id="workbench-title">STM32 operation console</h2>
+      <p class="muted">Enter the intended operation freely. Registered policy values appear as suggestions; the backend remains the decision authority.</p></div>
+    <span class="simulation-label">● SIMULATION MODE</span>
+  </div>
+  <div class="context-strip d-flex flex-wrap gap-3 align-items-center">
+    <span>Reference system <strong>{{ referenceSystemId }}</strong></span>
+    <span>Last CPC ID <strong>{{ cpc.activeId() ?? 'Issued on request' }}</strong></span>
+    <span>Role <strong>{{ auth.session()?.role ?? 'Unverified' }}</strong></span>
+    <span>isAdmin: <strong>{{ auth.session()?.role === 'Admin' }}</strong></span>
+  </div>
+  @if (!auth.session()) {
+    <div class="notice" role="status">{{ auth.sessionError() || 'Verifying your session before enabling operations.' }}
+      @if (auth.sessionError()) { <button type="button" class="link-button" (click)="auth.refreshSession().subscribe({error: ignoreError})">Retry session</button> }
+    </div>
+  }
+  @if (errorMessage()) { <div class="notice error" role="alert">{{ errorMessage() }}</div> }
+  <div class="row g-3">
+    @for (card of cards(); track card.id) {
+      <div class="col-12 col-lg-6 col-xxl-4"><article class="operation-card h-100">
+        <div class="d-flex align-items-center justify-content-between"><div><p class="card-kicker">REGISTERED SUBSYSTEM</p><h3>{{ card.name }}</h3></div><span class="status-pill">ACTIVE</span></div>
+        <form [formGroup]="card.form" (ngSubmit)="execute(card)">
+          <label [for]="card.id + '-intent'">Intent</label>
+          <input class="form-control" [id]="card.id + '-intent'" formControlName="intent"
+            [attr.list]="card.id + '-intent-suggestions'" placeholder="Describe or enter an intent identifier" autocomplete="off" />
+          <datalist [id]="card.id + '-intent-suggestions'">
+            @for (mapping of card.mappings; track mapping.intent) { <option [value]="mapping.intent"></option> }
+          </datalist>
+
+          <label [for]="card.id + '-command'">Command</label>
+          <input class="form-control" [id]="card.id + '-command'" formControlName="command"
+            [attr.list]="card.id + '-command-suggestions'" placeholder="Enter the requested command" autocomplete="off" />
+          <datalist [id]="card.id + '-command-suggestions'">
+            @for (command of commandSuggestions(card); track command) { <option [value]="command"></option> }
+          </datalist>
+
+          <p class="input-guidance">Free-form values are submitted unchanged for policy evaluation. Unregistered values are expected to be denied and recorded.</p>
+          <div class="operation-info"><span>Target <strong>{{ card.id }}</strong></span>
+            <span [class.admin-only]="!isReadOnly(card)">{{ isReadOnly(card) ? 'Known read-only command' : 'Backend policy evaluated' }}</span></div>
+          <button class="execute-button w-100" type="submit"
+            [disabled]="busy() || !auth.session() || !card.form.controls.intent.value.trim() || !card.form.controls.command.value.trim()">
+            {{ busy() ? 'Request in progress…' : 'Submit for authorization' }}
+          </button>
+        </form>
+        @if (latest()[card.id]; as result) {
+          <div class="decision" [class.denied]="result.decision !== 'ALLOW'"><strong>{{ result.decision }}</strong> · {{ result.reason }}<br><span>{{ result.message }}</span>
+            <pre>{{ result.output.join('\n') }}</pre></div>
+        }
+      </article></div>
+    }
+  </div>
+  <section class="history" aria-labelledby="history-title"><div class="d-flex justify-content-between align-items-center"><div><p class="eyebrow">SESSION OBSERVABILITY</p><h2 id="history-title">Recent decisions</h2></div><span class="muted">Last {{ history().length }} operations</span></div>
+    @if (!history().length) { <p class="muted mt-3 mb-0">No operations requested in this session.</p> }
+    @for (entry of history(); track $index) {
+      <div class="history-row"><div><strong>{{ entry.subsystem }} / {{ entry.command }}</strong><span>{{ entry.intent }} · target {{ entry.target }} · {{ entry.role }}</span></div>
+        <div class="history-result"><strong [class.deny-text]="entry.decision !== 'ALLOW'">{{ entry.decision }}</strong><span>{{ entry.reason }} · {{ entry.durationMs }} ms · {{ entry.time | date:'mediumTime' }}</span><span>{{ entry.output[0].startsWith('[SIMULATED]') ? 'Simulated' : 'Not executed' }}</span></div></div>
+    }
+  </section>
+  <p class="simulation-note">Simulation uses deterministic fixtures. No physical STM32 hardware is accessed.</p>
+</section>
